@@ -19,9 +19,11 @@
 
 package openmuonline;
 
+import openmuonline.loginserver.LoginServer;
+
 /**
  * Main class
- * @author Mark Schmale
+ * @author Mark Schmale <ma.schmale@googlemail.com>
  */
 public class Main {
 
@@ -29,7 +31,9 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        // just testing stuff
+        LoginServer lgn = new LoginServer(44405);
+        lgn.start();
     }
 
 }
