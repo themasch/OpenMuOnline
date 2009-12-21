@@ -1,0 +1,107 @@
+Wireshark filter: ip.addr == <serverip> && tcp && tcp.flags.push == 1 && !(tcp.analysis.retransmission)
+
+
+content types
+  00 => verbindung
+  F4 => serverliste
+    F4 03 => server wählen 
+    F4 06 => serverliste hohlen / abliefern
+
+
+msg_type c1 
+  max_len = 255
+  +----+-------+--------------+---------+-----..
+  | C1 | länge | content_type |  action | data...
+  +----+-------+--------------+---------+-----..
+
+msg_type c2 
+  für die Länge stehen hier zwei bytes zur verfügung:
+  max_len = 65535 (?)
+  +----+---+---+--------------+---------+-----..
+  | C2 | länge | content_type |  action | data...
+  +----+---+---+--------------+---------+-----..
+
+login server welcome (1. nachricht nach dem starten)
+  S => C
+    C1 04 00 01
+    C1 => msg_type 
+    04 => länge
+    00 => msg_id
+    01 => "welcome"??
+
+C => S: anforderung der gesamten serverliste
+  +----+----+----+----+ 
+  | C1 | 04 | F4 | 06 |
+  +----+----+----+----+
+
+  Byte | Feld         | Bedeutung
+     1 | msg_type     | - 
+     2 | length       | - 
+     3 | content_type | "serverliste"
+     4 | action       | "liste hohlen"
+  
+
+S => C serverliste  
+
+  bsp 1: C2 000F F4 06 00 02 00 00 34 77 
+                             01 00 0B 77
+
+  bsp 2: C2 001B F4 06 00 05 00 00 3E 77
+                             01 00 3B 77
+                             02 00 57 77
+                             03 00 3F 77
+                             04 00 02 77 
+
+  Serverliste:
+    +----+---+---+----+----+----...
+    | C2 | länge | F4 | 06 | <srv_grp_lst>
+    +----+---+---+----+----+----...
+   Byte | Feld         | Bedeutung
+      1 | msg_type     | - 
+    2+3 | length       | - 
+      4 | content_type | "serverliste"
+      5 | action       | "liste hohlen"
+    6.. | srv_grp_lst  | liste der servergruppen 
+  
+  part - srv_grp_lst: 
+    +----+---------------+---+---+---+---+
+    | nr | anzahl_server | <server_info> |
+    +----+---------------+---+---+---+---+
+   Byte | field      | desc
+      1 | srv_grp_id | id der servergruppe
+      2 | srv_count  | anzahl der server in der gruppe
+   3..6 | srv_info   | informationen über die einzelnen server
+ 
+  part - server_info
+    +----+--------+---------+--------+
+    | nr | 00(??) | load(%) | 77(??) |
+    +----+--------+---------+--------+
+   Byte | field  | desc
+      1 | srv_id | id des servers (innerhalb der servergruppe??)
+      2 | - ?? - | ?? (immer 00)
+      3 | load   | server auslastung (in %??)
+      4 | - ?? - | ?? (immer 77) // seperator?
+
+C => S: auswahl eines servers
+  C1 06 F4 03 04 00
+    C1 => msg_type 1
+    06 => gesamtlänge 
+    F4 => msg_id (content_type)
+    03 => aktion: server wählen
+    04 => srv_id 
+    00 => srv_grp_id ?
+  C1 06 F4 03 01 00
+    C1 => msg_type 1
+    06 => gesamtlänge 
+    F4 => msg_id (content_type)
+    03 => aktion: server wählen
+    01 => srv_id 
+    00 => srv_grp_id ??
+
+S => C: antwort darauf (??)
+  C1 16 F4 03 | 32 30 38 2e 34 33 2e 37 2e 31 39 | 00 00 00 00 00 00 | 6D
+      HEAD    |      ACII-String der IP          |      padding      | ??
+
+////////////////////////////
+  C1 0C F1 00 | 01 0c ea 31 30 35 33 30 
+      HEAD    | 
