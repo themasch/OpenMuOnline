@@ -3,22 +3,22 @@
  * and open the template in the editor.
  */
 
-package openmuonline.loginserver;
+package openmuonline.connectserver;
 
-import java.net.Socket;
-import openmuonline.exceptions.UnkownPackageException;
 import openmuonline.network.ClientSocket;
 import openmuonline.utils.Logger;
 import openmuonline.packages.Package;
+import openmuonline.packages.WelcomePackage;
+import java.net.Socket;
+
 /**
  *
  * @author masch
  */
-public class LoginHandler extends Thread {
-
+public class ConnectHandler extends Thread {
     private ClientSocket client;
 
-    public LoginHandler(Socket client)
+    public ConnectHandler(Socket client)
     {
         this.client = new ClientSocket(client);
     }
@@ -27,8 +27,11 @@ public class LoginHandler extends Thread {
     public void run()
     {
         String id = String.valueOf(this.getId());
-        Logger.log("[" + id + "]: loginhandler started");
-        // do login stuff here
+        Logger.log("[" + id + "]: ConnectHandler started");
+        // do connect stuff here
+        // send welcome package
+        Package welcome = WelcomePackage.create();
+        this.client.write(welcome);
         try {
             Package read = this.client.read();
             Logger.log("[" + id + "]: " + read.toString());
@@ -42,7 +45,7 @@ public class LoginHandler extends Thread {
             Logger.error("[" + id + "]: received unknown package");
         }
         this.client.shutdown();
-        Logger.log("[" + id + "]: loginhandler stopped");
+        Logger.log("[" + id + "]: ConnectHandler stopped");
     }
 
 }

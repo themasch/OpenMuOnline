@@ -8,8 +8,10 @@ package openmuonline.network;
 import java.net.Socket;
 
 import openmuonline.packages.Package;
+import openmuonline.utils.ByteArray;
 import openmuonline.utils.Logger;
 import openmuonline.exceptions.ClientTimeoutException;
+import openmuonline.exceptions.UnkownPackageException;
 
 
 /**
@@ -25,9 +27,9 @@ public class ClientSocket {
         this.client = sock;
     }
 
-    public Package read() throws ClientTimeoutException
+    public Package read() throws ClientTimeoutException, UnkownPackageException
     {
-        Package in = new Package();
+        ByteArray in = new ByteArray();
         byte read;
         try {
             try {
@@ -51,7 +53,7 @@ public class ClientSocket {
             }
             catch(java.net.SocketTimeoutException e)
             {
-                return in;
+                return new Package(in);
             }
         }
         catch(java.net.SocketException e)
@@ -62,7 +64,7 @@ public class ClientSocket {
         {
             Logger.error(e.getLocalizedMessage());
         }
-        return in;
+        return new Package(in);
     }
 
     public void write(Package msg)

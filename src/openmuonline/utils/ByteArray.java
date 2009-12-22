@@ -15,6 +15,18 @@ public class ByteArray {
     private byte[] buff = new byte[16];
     private int ptr = 0;
 
+    public ByteArray(ByteArray org, int start)
+    {
+        int max    = org.size();
+        int size   = max - start;
+        byte[] tmp = new byte[size];
+        for(int i=0;i<size;i++)
+        {
+            tmp[i] = org.get(i+start);
+        }
+        this.buff = tmp;
+    }
+
     public ByteArray()
     {
         
@@ -38,6 +50,7 @@ public class ByteArray {
                ptr = i+1;
             }
         }
+
 
     }
 
@@ -87,6 +100,18 @@ public class ByteArray {
     public byte[] getBytes()
     {
         return this.buff;
+    }
+
+    public String toString()
+    {
+        int i;
+        int max = this.ptr;
+        String str = "";
+        for(i=0;i<max;i++)
+        {
+            str = str + Integer.toHexString(this.get(i)) + " ";
+        }
+        return str;
     }
 
 }

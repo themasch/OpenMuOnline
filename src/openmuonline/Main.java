@@ -19,7 +19,7 @@
 
 package openmuonline;
 
-import openmuonline.loginserver.LoginServer;
+import openmuonline.connectserver.ConnectServer;
 
 /**
  * Main class
@@ -32,8 +32,8 @@ public class Main {
      */
     public static void main(String[] args) {
         // just testing stuff
-        LoginServer lgn = new LoginServer(44405);
-        lgn.start();
+        ConnectServer con = new ConnectServer(44405);
+        con.start();
     }
 
 }
