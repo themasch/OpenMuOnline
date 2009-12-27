@@ -11,14 +11,9 @@ import openmuonline.utils.ByteArray;
  *
  * @author masch
  */
-public class MessageTypeC2 implements IMessage {
+public class MessageTypeC2 extends AbstractMessage {
 
-    private ByteArray buffer   = new ByteArray();
-    private ByteArray data     = new ByteArray();
     private byte      msg_type = (byte)0xC2;
-    private byte      action_1 = 0;
-    private byte      action_2 = 0;
-
 
     public MessageTypeC2(byte[] data)
     {
@@ -36,10 +31,7 @@ public class MessageTypeC2 implements IMessage {
         }
     }
 
-    public MessageTypeC2()
-    {
-        
-    }
+    public MessageTypeC2() {}
 
     private void build()
     {
@@ -61,33 +53,14 @@ public class MessageTypeC2 implements IMessage {
         this.buffer = new ByteArray(tmp);
     }
 
-    public ByteArray getData() {
-        return this.data;
-    }
-
     public ByteArray get()
     {
         this.build();
         return this.buffer;
     }
 
-    public int getLenght() {
+    public int getLenght()
+    {
         return 5 + this.data.size();
     }
-
-    public void setAction(byte one, byte two)
-    {
-        this.action_1 = one;
-        this.action_2 = two;
-    }
-
-    public void setData(ByteArray data) {
-        this.data = data;
-    }
-
-    public void setData(byte[] data) {
-        this.data = new ByteArray(data);
-    }
-
-
 }

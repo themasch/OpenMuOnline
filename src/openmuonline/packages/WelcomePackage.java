@@ -9,12 +9,11 @@ package openmuonline.packages;
  *
  * @author masch
  */
-public class WelcomePackage {
+public class WelcomePackage extends MessageTypeC1 {
 
-    public static Package create()
+    public WelcomePackage()
     {
-        IMessage msg = new MessageTypeC1();
-        msg.setAction((byte)0, (byte)1);
-        return new Package(msg);
+        super();
+        this.setAction((byte)0, (byte)1);
     }
 }

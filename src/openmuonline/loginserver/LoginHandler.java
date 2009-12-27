@@ -9,7 +9,7 @@ import java.net.Socket;
 import openmuonline.exceptions.UnkownPackageException;
 import openmuonline.network.ClientSocket;
 import openmuonline.utils.Logger;
-import openmuonline.packages.Package;
+import openmuonline.packages.IMessage;
 /**
  *
  * @author masch
@@ -30,8 +30,8 @@ public class LoginHandler extends Thread {
         Logger.log("[" + id + "]: loginhandler started");
         // do login stuff here
         try {
-            Package read = this.client.read();
-            Logger.log("[" + id + "]: " + read.toString());
+            IMessage in = this.client.read();
+            Logger.log("[" + id + "]: " + in.toString());
         }
         catch(openmuonline.exceptions.ClientTimeoutException e)
         {

@@ -19,8 +19,11 @@ public interface IMessage {
     public void setData(byte[] data);
 
     public int getLenght();
-
+    public ByteArray getAction();
     public ByteArray get();
 
     public void setAction(byte one, byte two);
+
+    @Override
+    public String toString();
 }

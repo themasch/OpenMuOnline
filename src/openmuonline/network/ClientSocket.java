@@ -7,6 +7,7 @@ package openmuonline.network;
 
 import java.net.Socket;
 
+import openmuonline.packages.IMessage;
 import openmuonline.packages.Package;
 import openmuonline.utils.ByteArray;
 import openmuonline.utils.Logger;
@@ -27,7 +28,14 @@ public class ClientSocket {
         this.client = sock;
     }
 
-    public Package read() throws ClientTimeoutException, UnkownPackageException
+    /**
+     * reads a complete message from the client
+     *
+     * @return message from the Client
+     * @throws ClientTimeoutException
+     * @throws UnkownPackageException
+     */
+    public IMessage read() throws ClientTimeoutException, UnkownPackageException
     {
         ByteArray in = new ByteArray();
         byte read;
@@ -53,7 +61,7 @@ public class ClientSocket {
             }
             catch(java.net.SocketTimeoutException e)
             {
-                return new Package(in);
+                // stop reading!
             }
         }
         catch(java.net.SocketException e)
@@ -64,13 +72,18 @@ public class ClientSocket {
         {
             Logger.error(e.getLocalizedMessage());
         }
-        return new Package(in);
+        return Package.parse(in);
     }
 
-    public void write(Package msg)
+    /**
+     * Sends a message to the client
+     *
+     * @param msg Message to send
+     */
+    public void send(IMessage msg)
     {
         try {
-            this.client.getOutputStream().write(msg.getBytes());
+            this.client.getOutputStream().write(msg.get().getBytes());
         }
         catch(java.io.IOException e)
         {
@@ -78,15 +91,17 @@ public class ClientSocket {
         }
     }
 
+
+    /**
+     * closes the socket
+     */
     public void shutdown()
     {
         try {
             this.client.close();
         }
-        catch(java.io.IOException e)
-        {
+        catch(java.io.IOException e) {
             Logger.error(e.getLocalizedMessage());
         }
-        
     }
 }

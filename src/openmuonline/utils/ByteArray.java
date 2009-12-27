@@ -5,7 +5,6 @@
 
 package openmuonline.utils;
 
-
 /**
  *
  * @author masch
@@ -102,14 +101,25 @@ public class ByteArray {
         return this.buff;
     }
 
+    @Override
     public String toString()
     {
         int i;
         int max = this.ptr;
         String str = "";
+        String tmp = "";
         for(i=0;i<max;i++)
         {
-            str = str + Integer.toHexString(this.get(i)) + " ";
+            tmp = Integer.toHexString(this.get(i));
+            if(tmp.length() <= 1)
+            {
+                tmp = "0" + tmp.charAt(tmp.length()-1);
+            }
+            if(tmp.length() >= 3)
+            {
+                tmp = tmp.substring(tmp.length()-2);
+            }
+            str = str + tmp.toUpperCase();
         }
         return str;
     }
