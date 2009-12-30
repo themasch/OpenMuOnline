@@ -3,7 +3,9 @@
  * and open the template in the editor.
  */
 
-package openmuonline.utils;
+package cosmos.utils.log;
+
+import java.util.ArrayList;
 
 /**
  *
@@ -16,6 +18,12 @@ public class Logger {
     public final static int STATUS = 4;
     public final static int WARN   = 8;
 
+    private static ArrayList<LogWriter> logger = new ArrayList<LogWriter>();
+    
+    public static void attachLogger(LogWriter logger)
+    {
+        Logger.logger.add(logger);
+    }
 
     public static void log(String msg)
     {
@@ -24,8 +32,12 @@ public class Logger {
 
     public static void log(String msg, int lvl)
     {
-        System.out.print(System.currentTimeMillis());
-        System.out.println("| " + msg);
+        for(LogWriter wr: Logger.logger)
+        {
+            wr.open();
+            wr.write(msg, lvl);
+            wr.close();
+        }
     }
 
     public static void status(String msg)

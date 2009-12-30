@@ -3,11 +3,11 @@
  * and open the template in the editor.
  */
 
-package openmuonline.packages;
+package cosmos.packages;
 
-import openmuonline.utils.ByteArray;
-import openmuonline.exceptions.UnkownPackageException;
-import openmuonline.utils.Logger;
+import cosmos.utils.ByteArray;
+import cosmos.exceptions.UnkownPackageException;
+import cosmos.utils.log.Logger;
 
 /**
  *

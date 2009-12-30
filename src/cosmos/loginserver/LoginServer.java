@@ -3,11 +3,11 @@
  * and open the template in the editor.
  */
 
-package openmuonline.loginserver;
+package cosmos.loginserver;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import openmuonline.utils.Logger;
+import cosmos.utils.log.Logger;
 import java.net.Socket;
 
 /**

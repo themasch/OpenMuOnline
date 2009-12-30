@@ -3,16 +3,16 @@
  * and open the template in the editor.
  */
 
-package openmuonline.network;
+package cosmos.network;
 
 import java.net.Socket;
 
-import openmuonline.packages.IMessage;
-import openmuonline.packages.Package;
-import openmuonline.utils.ByteArray;
-import openmuonline.utils.Logger;
-import openmuonline.exceptions.ClientTimeoutException;
-import openmuonline.exceptions.UnkownPackageException;
+import cosmos.packages.IMessage;
+import cosmos.packages.Package;
+import cosmos.utils.ByteArray;
+import cosmos.utils.log.Logger;
+import cosmos.exceptions.ClientTimeoutException;
+import cosmos.exceptions.UnkownPackageException;
 
 
 /**

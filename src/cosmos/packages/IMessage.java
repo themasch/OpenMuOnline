@@ -3,10 +3,10 @@
  * and open the template in the editor.
  */
 
-package openmuonline.packages;
+package cosmos.packages;
 
 
-import openmuonline.utils.ByteArray;
+import cosmos.utils.ByteArray;
 
 /**
  *

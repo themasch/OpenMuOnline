@@ -3,13 +3,13 @@
  * and open the template in the editor.
  */
 
-package openmuonline.loginserver;
+package cosmos.loginserver;
 
 import java.net.Socket;
-import openmuonline.exceptions.UnkownPackageException;
-import openmuonline.network.ClientSocket;
-import openmuonline.utils.Logger;
-import openmuonline.packages.IMessage;
+import cosmos.exceptions.UnkownPackageException;
+import cosmos.network.ClientSocket;
+import cosmos.utils.log.Logger;
+import cosmos.packages.IMessage;
 /**
  *
  * @author masch
@@ -33,11 +33,11 @@ public class LoginHandler extends Thread {
             IMessage in = this.client.read();
             Logger.log("[" + id + "]: " + in.toString());
         }
-        catch(openmuonline.exceptions.ClientTimeoutException e)
+        catch(cosmos.exceptions.ClientTimeoutException e)
         {
             Logger.error("[" + id + "]: client timed out");
         }
-        catch(openmuonline.exceptions.UnkownPackageException e)
+        catch(cosmos.exceptions.UnkownPackageException e)
         {
             Logger.error("[" + id + "]: received unknown package");
         }

@@ -17,10 +17,12 @@
  *
  */
 
-package openmuonline;
+package cosmos;
 
-import openmuonline.connectserver.ConnectServer;
-
+import cosmos.connectserver.ConnectServer;
+import cosmos.utils.log.LogWriterStdOut;
+import cosmos.utils.log.LogWriterFile;
+import cosmos.utils.log.Logger;
 /**
  * Main class
  * @author Mark Schmale <ma.schmale@googlemail.com>
@@ -31,6 +33,15 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        // logging stuff
+        Logger.attachLogger(new LogWriterStdOut());
+        try {
+            LogWriterFile flog = new LogWriterFile("./cosmos.log");
+            Logger.attachLogger(flog);
+        } 
+        catch(java.io.IOException e) {
+            Logger.error(e.getLocalizedMessage());
+        }
         // just testing stuff
         ConnectServer con = new ConnectServer(44405);
         con.start();

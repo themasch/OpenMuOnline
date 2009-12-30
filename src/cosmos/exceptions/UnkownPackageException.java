@@ -3,12 +3,12 @@
  * and open the template in the editor.
  */
 
-package openmuonline.exceptions;
+package cosmos.exceptions;
 
 /**
  *
  * @author masch
  */
-public class ClientTimeoutException extends Exception {
+public class UnkownPackageException extends Exception {
 
 }

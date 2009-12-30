@@ -3,13 +3,13 @@
  * and open the template in the editor.
  */
 
-package openmuonline.connectserver;
+package cosmos.connectserver;
 
-import openmuonline.network.ClientSocket;
-import openmuonline.utils.Logger;
-import openmuonline.utils.ByteArray;
-import openmuonline.packages.IMessage;
-import openmuonline.packages.WelcomePackage;
+import cosmos.network.ClientSocket;
+import cosmos.utils.log.Logger;
+import cosmos.utils.ByteArray;
+import cosmos.packages.IMessage;
+import cosmos.packages.WelcomePackage;
 import java.net.Socket;
 
 /**
@@ -41,11 +41,11 @@ public class ConnectHandler extends Thread {
                 this.handleMessage(in);
             }
         }
-        catch(openmuonline.exceptions.ClientTimeoutException e)
+        catch(cosmos.exceptions.ClientTimeoutException e)
         {
             Logger.error("[" + id + "]: client timed out");
         }
-        catch(openmuonline.exceptions.UnkownPackageException e)
+        catch(cosmos.exceptions.UnkownPackageException e)
         {
             Logger.error("[" + id + "]: received unknown package");
         }
