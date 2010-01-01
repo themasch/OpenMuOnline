@@ -91,7 +91,7 @@ public class ClientSocket {
         }
         catch(java.io.IOException e)
         {
-            Logger.error(e.getLocalizßedMessage());
+            Logger.error(e.getLocalizedMessage());
         }
     }
 
