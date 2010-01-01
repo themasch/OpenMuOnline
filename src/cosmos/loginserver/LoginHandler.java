@@ -20,6 +20,9 @@ public class LoginHandler extends Thread {
 
     public LoginHandler(Socket client)
     {
+        // threading stuff
+        String id = String.valueOf(this.getId());
+        this.setName("LoginHandler [" + id + "]");
         this.client = new ClientSocket(client);
     }
 

@@ -20,6 +20,8 @@ public class LoginServer extends Thread {
 
     public LoginServer(int port)
     {
+        // threading stuff
+        this.setName("LoginServer");
         try {
             this.sock = new ServerSocket(port);
         }

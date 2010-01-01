@@ -19,6 +19,8 @@ public class ConnectServer extends Thread {
 
     public ConnectServer(int port)
     {
+        // threading stuff
+        this.setName("ConnectServer");
         try {
             this.sock = new ServerSocket(port);
         }

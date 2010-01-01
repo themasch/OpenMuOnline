@@ -7,7 +7,6 @@ package cosmos.packages;
 
 import cosmos.utils.ByteArray;
 import cosmos.exceptions.UnkownPackageException;
-import cosmos.utils.log.Logger;
 
 /**
  *
@@ -17,6 +16,7 @@ public class Package {
 
     public static IMessage parse(ByteArray in) throws UnkownPackageException
     {
+        if(in.size() < 4) throw new UnkownPackageException();
         byte msg_type = in.get(0);
         switch(msg_type)
         {

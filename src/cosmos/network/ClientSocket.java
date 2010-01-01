@@ -67,6 +67,10 @@ public class ClientSocket {
         catch(java.net.SocketException e)
         {
             Logger.error(e.getLocalizedMessage());
+            if(e.getMessage().equals("Connection reset"))
+            {
+                throw new ClientTimeoutException();
+            }
         }
         catch(java.io.IOException e)
         {
@@ -87,7 +91,7 @@ public class ClientSocket {
         }
         catch(java.io.IOException e)
         {
-            Logger.error(e.getLocalizedMessage());
+            Logger.error(e.getLocalizßedMessage());
         }
     }
 

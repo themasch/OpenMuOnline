@@ -30,7 +30,7 @@ public class Logger {
         Logger.log(msg, Logger.INFO);
     }
 
-    public static void log(String msg, int lvl)
+    public static synchronized void log(String msg, int lvl)
     {
         for(LogWriter wr: Logger.logger)
         {

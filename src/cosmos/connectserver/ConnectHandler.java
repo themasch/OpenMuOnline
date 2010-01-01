@@ -21,6 +21,9 @@ public class ConnectHandler extends Thread {
 
     public ConnectHandler(Socket client)
     {
+        // threading stuff
+        String id = String.valueOf(this.getId());
+        this.setName("ConnectHandler [" + id + "]");
         this.client = new ClientSocket(client);
     }
 
@@ -33,21 +36,23 @@ public class ConnectHandler extends Thread {
         // send welcome package
         IMessage welcome = new WelcomePackage();
         this.client.send(welcome);
-        try {
-            while(true)
-            {
+
+        while(true)
+        {
+            try {
                 IMessage in = this.client.read();
                 Logger.log("[" + id + "] said " + in.toString());
                 this.handleMessage(in);
             }
-        }
-        catch(cosmos.exceptions.ClientTimeoutException e)
-        {
-            Logger.error("[" + id + "]: client timed out");
-        }
-        catch(cosmos.exceptions.UnkownPackageException e)
-        {
-            Logger.error("[" + id + "]: received unknown package");
+            catch(cosmos.exceptions.ClientTimeoutException e)
+            {
+                Logger.error("[" + id + "]: client timed out");
+                break;
+            }
+            catch(cosmos.exceptions.UnkownPackageException e)
+            {
+                Logger.error("[" + id + "]: received unknown package");
+            }
         }
         this.client.shutdown();
         Logger.log("[" + id + "]: ConnectHandler stopped");
@@ -59,6 +64,7 @@ public class ConnectHandler extends Thread {
         if(action.get(0) == (byte)0xF4 && action.get(1) == (byte)0x06)
         {   // ask for server list
             // TODO: build & send serverlist
+            Logger.log("clients requests the serverlist");
             
         }
 

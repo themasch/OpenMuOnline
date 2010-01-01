@@ -19,7 +19,7 @@
 
 package cosmos;
 
-import cosmos.connectserver.ConnectServer;
+import cosmos.control.ControlServer;
 import cosmos.utils.log.LogWriterStdOut;
 import cosmos.utils.log.LogWriterFile;
 import cosmos.utils.log.Logger;
@@ -34,17 +34,18 @@ public class Main {
      */
     public static void main(String[] args) {
         // logging stuff
-        Logger.attachLogger(new LogWriterStdOut());
         try {
+            Logger.attachLogger(new LogWriterStdOut());
             LogWriterFile flog = new LogWriterFile("./cosmos.log");
             Logger.attachLogger(flog);
+            // START!
+            ControlServer ctl = new ControlServer("./config.ini");
+            ctl.start();
         } 
         catch(java.io.IOException e) {
-            Logger.error(e.getLocalizedMessage());
+            System.err.println(e.getLocalizedMessage());
         }
-        // just testing stuff
-        ConnectServer con = new ConnectServer(44405);
-        con.start();
+        
     }
 
 }
