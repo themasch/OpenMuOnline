@@ -21,11 +21,13 @@ import cosmos.exceptions.UnkownPackageException;
  */
 public class ClientSocket {
 
-    private Socket client;
+    protected Socket client;
+    protected ClientStatus status;
 
     public ClientSocket(Socket sock)
     {
         this.client = sock;
+        this.status = ClientStatus.CONNECTED;
     }
 
     /**
@@ -39,38 +41,40 @@ public class ClientSocket {
     {
         ByteArray in = new ByteArray();
         byte read;
+        int cnt = 0;
         try {
-            try {
+            while(this.status == ClientStatus.CONNECTED)
+            {
                 // for the first byte, we wait 10 seconds
-                this.client.setSoTimeout(10000);
+                int timeout = 10000;
+                if(cnt >= 1)
+                {
+                    // for the next only 0.2seconds
+                    timeout = 200;
+                }
+                this.client.setSoTimeout(timeout);
                 read = (byte)this.client.getInputStream().read();
                 in.append(read);
+                cnt++;
             }
-            catch(java.net.SocketTimeoutException e)
+        }
+        catch(java.net.SocketTimeoutException e)
+        {
+            if(cnt == 0)
             {
+                // if this was the first byte, there seems to be no client
+                this.status = ClientStatus.DISCONNECTED;
                 throw new ClientTimeoutException();
-            }
-            try {
-                // for the next only 0.2seconds
-                this.client.setSoTimeout(200);
-                while(true)
-                {
-                    read = (byte)this.client.getInputStream().read();
-                    in.append(read);
-                }
-            }
-            catch(java.net.SocketTimeoutException e)
-            {
-                // stop reading!
-            }
+            } // else: he has nothing to say
         }
         catch(java.net.SocketException e)
         {
-            Logger.error(e.getLocalizedMessage());
             if(e.getMessage().equals("Connection reset"))
             {
+                this.status = ClientStatus.DISCONNECTED;
                 throw new ClientTimeoutException();
             }
+            Logger.error(e.getLocalizedMessage());
         }
         catch(java.io.IOException e)
         {
@@ -84,10 +88,16 @@ public class ClientSocket {
      *
      * @param msg Message to send
      */
-    public void send(IMessage msg)
+    public void send(IMessage msg) throws ClientTimeoutException
     {
         try {
-            this.client.getOutputStream().write(msg.get().getBytes());
+            if(this.status == ClientStatus.CONNECTED)
+            {
+                this.client.getOutputStream().write(msg.get().getBytes());
+                this.client.getOutputStream().flush();
+            } else {
+                throw new ClientTimeoutException();
+            }
         }
         catch(java.io.IOException e)
         {
@@ -103,6 +113,7 @@ public class ClientSocket {
     {
         try {
             this.client.close();
+            this.status = ClientStatus.DISCONNECTED;
         }
         catch(java.io.IOException e) {
             Logger.error(e.getLocalizedMessage());

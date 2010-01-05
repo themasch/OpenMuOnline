@@ -5,6 +5,7 @@
 
 package cosmos.connect;
 
+import cosmos.exceptions.ClientTimeoutException;
 import cosmos.network.ClientSocket;
 import cosmos.utils.log.Logger;
 import cosmos.utils.ByteArray;
@@ -33,27 +34,28 @@ public class ConnectHandler extends Thread {
         String id = String.valueOf(this.getId());
         Logger.log("[" + id + "]: ConnectHandler started");
         // do connect stuff here
-        // send welcome package
-        IMessage welcome = new WelcomePackage();
-        this.client.send(welcome);
-
-        while(true)
-        {
-            try {
-                IMessage in = this.client.read();
-                Logger.log("[" + id + "] said " + in.toString());
-                this.handleMessage(in);
-            }
-            catch(cosmos.exceptions.ClientTimeoutException e)
+        try {
+            // send welcome package
+            IMessage welcome = new WelcomePackage();
+            this.client.send(welcome);
+            while(true)
             {
-                Logger.error("[" + id + "]: client timed out");
-                break;
-            }
-            catch(cosmos.exceptions.UnkownPackageException e)
-            {
-                Logger.error("[" + id + "]: received unknown package");
+                try {
+                    IMessage in = this.client.read();
+                    Logger.log("[" + id + "] said " + in.toString());
+                    this.handleMessage(in);
+                }
+                catch(cosmos.exceptions.UnkownPackageException e)
+                {
+                    Logger.error("[" + id + "]: received unknown package");
+                }
             }
         }
+        catch(cosmos.exceptions.ClientTimeoutException e)
+        {
+            Logger.error("[" + id + "]: client timed out");
+        }
+  
         this.client.shutdown();
         Logger.log("[" + id + "]: ConnectHandler stopped");
     }
