@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package cosmos.connectserver;
+package cosmos.connect;
 
 import cosmos.network.ClientSocket;
 import cosmos.utils.log.Logger;

@@ -1,11 +1,10 @@
 package cosmos.control;
 
-import cosmos.connectserver.ConnectServer;
-import cosmos.loginserver.LoginServer;
+import cosmos.connect.ConnectServer;
+import cosmos.login.LoginServer;
 import java.util.Properties;
 import java.io.FileInputStream;
 import cosmos.utils.log.Logger;
-import java.io.IOException;
 /**
  * Main server thread
  *

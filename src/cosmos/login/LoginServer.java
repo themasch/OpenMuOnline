@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package cosmos.loginserver;
+package cosmos.login;
 
 import java.io.IOException;
 import java.net.ServerSocket;
