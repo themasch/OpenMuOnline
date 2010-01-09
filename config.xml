@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config>
+    <loginserver active="false">
+        <port>27904</port>
+    </loginserver>
+    <connectserver active="true">
+        <port>44405</port>
+    </connectserver>
+    <gameservers>
+        <servergroup gid="1">
+            <gameserver sid="1" location="local">
+                <port>12345</port>
+            </gameserver>
+            <gameserver sid="2" location="local">
+                <port>12346</port>
+            </gameserver>
+        </servergroup>
+    </gameservers>
+</config>
+
