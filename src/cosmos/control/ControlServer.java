@@ -18,7 +18,9 @@ import cosmos.utils.log.Logger;
 public class ControlServer extends Thread {
 
     private ConnectServer cs;
+    private boolean       start_cs = false;
     private LoginServer   ls;
+    private boolean       start_ls = false;
 
     public ControlServer(String cfg) throws java.io.IOException
     {
@@ -28,22 +30,39 @@ public class ControlServer extends Thread {
         FileInputStream cfg_file = new FileInputStream(cfg);
         Properties config = new Properties();
         config.load(cfg_file);
+
+
+        this.start_cs = Boolean.parseBoolean(config.getProperty("connectsrv.start"));
+        this.start_ls = Boolean.parseBoolean(config.getProperty("loginsrv.start"));
+
         //// create the servers
         // connect server
-        int consrv_port = Integer.parseInt(config.getProperty("connectsrv.port"));
-        this.cs = new ConnectServer(consrv_port);
+        if(this.start_cs)
+        {
+            int consrv_port = Integer.parseInt(config.getProperty("connectsrv.port"));
+            this.cs = new ConnectServer(consrv_port);
+        }
         // login server
-        int lgnsrv_port = Integer.parseInt(config.getProperty("loginsrv.port"));
-        this.ls = new LoginServer(lgnsrv_port);
+        if(this.start_ls)
+        {
+            int lgnsrv_port = Integer.parseInt(config.getProperty("loginsrv.port"));
+            this.ls = new LoginServer(lgnsrv_port);
+        }
     }
 
     public void run()
     {
         // at first.. start all servers
-        Logger.status("starting ConnectServer...");
-        this.cs.start();
-        Logger.status("starting LoginServer...");
-        this.ls.start();
+        if(this.start_cs)
+        {
+            Logger.status("starting ConnectServer...");
+            this.cs.start();
+        }
+        if(this.start_ls)
+        {
+            Logger.status("starting LoginServer...");
+            this.ls.start();
+        }
 
         while(true)
         {
@@ -57,13 +76,13 @@ public class ControlServer extends Thread {
             }
             //// check servers
             // check cs
-            if(!this.cs.isAlive())
+            if(this.start_cs && !this.cs.isAlive())
             {
                 Logger.error("ConnectServer seems to be dead.. restarting!");
                 this.cs.start();
             }
             // check ls
-            if(!this.ls.isAlive())
+            if(this.start_ls && !this.ls.isAlive())
             {
                 Logger.error("LoginServer seems to be dead.. restarting!");
                 this.ls.start();
