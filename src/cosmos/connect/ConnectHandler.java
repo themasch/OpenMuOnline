@@ -1,11 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cosmos.connect;
 
-import cosmos.exceptions.ClientTimeoutException;
 import cosmos.network.ClientSocket;
 import cosmos.utils.log.Logger;
 import cosmos.utils.ByteArray;
