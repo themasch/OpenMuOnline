@@ -38,7 +38,7 @@ public class Main {
             Logger.attachLogger(new LogWriterStdOut());
             LogWriterFile flog = new LogWriterFile("./cosmos.log");
             Logger.attachLogger(flog);
-            // START!
+            // start the control server
             ControlServer ctl = new ControlServer("./config.ini");
             ctl.start();
         } 
