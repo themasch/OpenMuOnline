@@ -62,6 +62,7 @@ public class ByteArray {
         {
             tmp[i] = this.buff[i];
         }
+        this.buff = tmp;
     }
 
     public void append(byte value)
@@ -80,6 +81,7 @@ public class ByteArray {
     public void clear()
     {
         this.buff = new byte[16];
+        this.ptr  = 0;
     }
 
     public byte get(int index)
@@ -98,7 +100,14 @@ public class ByteArray {
 
     public byte[] getBytes()
     {
-        return this.buff;
+        byte[] all = new byte[this.ptr];
+        int i = 0;
+        // copy buffer to new array
+        for(i=0;i<this.ptr;i++)
+        {
+            all[i] = this.buff[i];
+        }
+        return all;
     }
 
     @Override
