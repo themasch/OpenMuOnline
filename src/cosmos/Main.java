@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 package cosmos;
@@ -23,6 +22,7 @@ import cosmos.control.ControlServer;
 import cosmos.utils.log.LogWriterStdOut;
 import cosmos.utils.log.LogWriterFile;
 import cosmos.utils.log.Logger;
+
 /**
  * Main class
  * @author Mark Schmale <ma.schmale@googlemail.com>
@@ -41,6 +41,7 @@ public class Main {
             // start the control server
             ControlServer ctl = new ControlServer("./config.ini");
             ctl.start();
+
         } 
         catch(java.io.IOException e) {
             System.err.println(e.getLocalizedMessage());
