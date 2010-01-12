@@ -5,25 +5,26 @@
 
 package cosmos.utils;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author masch
  */
 public class ByteArray {
 
-    private byte[] buff = new byte[16];
+    private ArrayList<Byte> buff = new ArrayList<Byte>();
     private int ptr = 0;
 
     public ByteArray(ByteArray org, int start)
     {
         int max    = org.size();
         int size   = max - start;
-        byte[] tmp = new byte[size];
         for(int i=0;i<size;i++)
         {
-            tmp[i] = org.get(i+start);
+            this.buff.add(org.get(i+start));
         }
-        this.buff = tmp;
+        
     }
 
     public ByteArray()
@@ -33,79 +34,47 @@ public class ByteArray {
 
     public ByteArray(String in)
     {
-        buff = in.getBytes();
+        this(in.getBytes());
     }
 
     public ByteArray(byte[] in)
     {
-        this.buff = in;
         int len = in.length;
-        int i = 0;
-        // set the pointer to the element after the last not-null-char
+        int i;
         for(i=0;i<len;i++)
         {
-            if(in[i] > 0)
-            {
-               ptr = i+1;
-            }
+            this.buff.add(in[i]);
         }
-
-
-    }
-
-    private void resizeBuffer()
-    {
-        int len = this.buff.length;
-        int newLen = len*2;
-        byte[] tmp = new byte[newLen];
-        for(int i = 0;i<len;i++)
-        {
-            tmp[i] = this.buff[i];
-        }
-        this.buff = tmp;
     }
 
     public void append(byte value)
     {
-        if(this.ptr >= this.buff.length)
-        {
-            // double the buffer size
-            this.resizeBuffer();
-        }
-        // append the new value
-        this.buff[this.ptr] = value;
-        // move the pointer
-        this.ptr++;
+        this.buff.add(value);
     }
 
     public void clear()
     {
-        this.buff = new byte[16];
-        this.ptr  = 0;
+        this.buff.clear();
     }
 
     public byte get(int index)
     {
-        if(index >= this.ptr)
-        {
-            throw new java.lang.IndexOutOfBoundsException();
-        }
-        return this.buff[index];
+        return this.buff.get(index).byteValue();
     }
 
     public int size()
     {
-        return this.ptr;
+        return this.buff.size();
     }
 
     public byte[] getBytes()
     {
-        byte[] all = new byte[this.ptr];
-        int i = 0;
-        // copy buffer to new array
-        for(i=0;i<this.ptr;i++)
+        int size   = this.size();
+        int i      = 0;
+        byte[] all = new byte[this.size()];
+        for(i=0;i<size;i++)
         {
-            all[i] = this.buff[i];
+            all[i] = this.get(i);
         }
         return all;
     }
@@ -114,7 +83,7 @@ public class ByteArray {
     public String toString()
     {
         int i;
-        int max = this.ptr;
+        int max = this.size();
         String str = "";
         String tmp = "";
         for(i=0;i<max;i++)
