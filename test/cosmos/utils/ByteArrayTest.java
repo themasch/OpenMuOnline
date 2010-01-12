@@ -93,7 +93,7 @@ public class ByteArrayTest {
     @Test
     public void testSize() {
         System.out.println("size");
-        int expResult = 3;
+        int expResult = this.getTestData().length;
         int result = instance.size();
         Assert.assertEquals(expResult, result);
     }
