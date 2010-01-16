@@ -26,25 +26,30 @@ import cosmos.packages.WelcomePackage;
 import java.net.Socket;
 
 /**
+ * Handels the connections to a single client
+ *
+ * For every Client connection to the ConnectServer
+ * a new ConnectHandler is spawned
  *
  * @author  Mark Schmale <ma.schmale@googlemail.com>
  */
 public class ConnectHandler extends Thread {
     private ClientSocket client;
 
+    private String myId;
+
     public ConnectHandler(Socket client)
     {
         // threading stuff
-        String id = String.valueOf(this.getId());
-        this.setName("ConnectHandler [" + id + "]");
+        this.myId = String.valueOf(this.getId());
+        this.setName("ConnectHandler [" + this.myId + "]");
         this.client = new ClientSocket(client);
     }
 
     @Override
     public void run()
     {
-        String id = String.valueOf(this.getId());
-        Logger.log("[" + id + "]: ConnectHandler started");
+        Logger.log("[" + this.myId + "]: ConnectHandler started");
         // do connect stuff here
         try {
             // send welcome package
@@ -54,22 +59,22 @@ public class ConnectHandler extends Thread {
             {
                 try {
                     IMessage in = this.client.read();
-                    Logger.log("[" + id + "] said " + in.toString());
+                    Logger.log("[" + this.myId + "] said " + in.toString());
                     this.handleMessage(in);
                 }
                 catch(cosmos.exceptions.UnkownPackageException e)
                 {
-                    Logger.error("[" + id + "]: received unknown package");
+                    Logger.error("[" + this.myId + "]: received unknown package");
                 }
             }
         }
         catch(cosmos.exceptions.ClientTimeoutException e)
         {
-            Logger.error("[" + id + "]: client timed out");
+            Logger.error("[" + this.myId + "]: client timed out");
         }
   
         this.client.shutdown();
-        Logger.log("[" + id + "]: ConnectHandler stopped");
+        Logger.log("[" + this.myId + "]: ConnectHandler stopped");
     }
 
     /**
