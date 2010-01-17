@@ -37,11 +37,8 @@ public class ByteArrayTest {
 
     private byte[] getTestData()
     {
-        byte[] in = new byte[3];
-        in[0] = 0x02;
-        in[1] = 0x04;
-        in[2] = 0x08;
-        return in;
+        byte[] data = {2,4,8};
+        return data;
     }
 
     @After
