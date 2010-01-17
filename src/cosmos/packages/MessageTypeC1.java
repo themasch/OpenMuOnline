@@ -26,7 +26,8 @@ import cosmos.utils.ByteArray;
  */
 public class MessageTypeC1 extends AbstractMessage {
 
-    private byte      msg_type = (byte)193;
+    protected byte      msg_type = (byte)193;
+    protected final int header_len  = 4;
 
 
     public MessageTypeC1(byte[] data)
@@ -53,7 +54,7 @@ public class MessageTypeC1 extends AbstractMessage {
         int i;
         int len = this.getLenght();
         byte[] tmp = new byte[len];
-        int dlength = len - 5;
+        int dlength = this.data.size();
         tmp[0] = this.msg_type;
         tmp[1] = (byte)len;
         tmp[2] = this.action_1;
@@ -72,6 +73,6 @@ public class MessageTypeC1 extends AbstractMessage {
     }
 
     public int getLenght() {
-        return 4 + this.data.size();
+        return this.header_len + this.data.size();
     }
 }

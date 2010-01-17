@@ -146,4 +146,23 @@ public class ByteArray {
         return str;
     }
 
+    public boolean equals(ByteArray obj)
+    {
+        int mylen  = this.size();
+        int objlen = obj.size();
+        if(mylen != objlen)
+        {
+            return false;
+        }
+        int cnt;
+        for(cnt=0;cnt<mylen;cnt++)
+        {
+            if(obj.get(cnt) != this.get(cnt))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
