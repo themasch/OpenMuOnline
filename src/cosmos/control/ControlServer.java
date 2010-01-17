@@ -19,8 +19,8 @@ package cosmos.control;
 
 import cosmos.connect.ConnectServer;
 import cosmos.login.LoginServer;
-import java.util.Properties;
-import java.io.FileInputStream;
+import cosmos.config.Config;
+import cosmos.config.ConfigIni;
 import cosmos.utils.log.Logger;
 /**
  * Main server thread
@@ -44,24 +44,25 @@ public class ControlServer extends Thread {
         // threading stuff
         this.setName("ControlServer");
         // load the configuration
-        FileInputStream cfg_file = new FileInputStream(cfg);
+        /*FileInputStream cfg_file = new FileInputStream(cfg);
         Properties config = new Properties();
-        config.load(cfg_file);
+        config.load(cfg_file);*/
+        Config config = new ConfigIni(cfg);
 
-        this.start_cs = Boolean.parseBoolean(config.getProperty("connectsrv.start"));
-        this.start_ls = Boolean.parseBoolean(config.getProperty("loginsrv.start"));
+        this.start_cs = config.getBoolean("connectsrv.start");
+        this.start_ls = config.getBoolean("loginsrv.start");
 
         //// create the servers
         // connect server
         if(this.start_cs)
         {
-            int consrv_port = Integer.parseInt(config.getProperty("connectsrv.port"));
+            int consrv_port = config.getInt("connectsrv.port");
             this.cs = new ConnectServer(consrv_port);
         }
         // login server
         if(this.start_ls)
         {
-            int lgnsrv_port = Integer.parseInt(config.getProperty("loginsrv.port"));
+            int lgnsrv_port = config.getInt("loginsrv.port");
             this.ls = new LoginServer(lgnsrv_port);
         }
     }
