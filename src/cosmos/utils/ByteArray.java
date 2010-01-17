@@ -8,13 +8,13 @@ package cosmos.utils;
 import java.util.ArrayList;
 
 /**
+ * Class for handling lists of bytes more simple
  *
- * @author masch
+ * @author Mark Schmale <ma.schmale@googlemail.com>
  */
 public class ByteArray {
 
     private ArrayList<Byte> buff = new ArrayList<Byte>();
-    private int ptr = 0;
 
     public ByteArray(ByteArray org, int start)
     {
@@ -24,7 +24,6 @@ public class ByteArray {
         {
             this.buff.add(org.get(i+start));
         }
-        
     }
 
     public ByteArray()
@@ -47,26 +46,52 @@ public class ByteArray {
         }
     }
 
+
+    /**
+     * appends the given value at the end of the list
+     * 
+     * @param value byte to append
+     */
     public void append(byte value)
     {
         this.buff.add(value);
     }
 
+
+    /**
+     * removes all elements from this ByteArray
+     */
     public void clear()
     {
         this.buff.clear();
     }
 
+    /**
+     * returns the byte at the specified position in this list
+     *
+     * @param index
+     * @return element at the specified index
+     */
     public byte get(int index)
     {
         return this.buff.get(index).byteValue();
     }
 
+    /**
+     * Returns the number of elements in the ByteArray
+     * @return number of elements in the ByteArray
+     */
     public int size()
     {
         return this.buff.size();
     }
 
+    /**
+     * returns a new array of bytes containing all
+     * bytes stored in the ByteArray
+     * 
+     * @return all bytes in the ByteArray
+     */
     public byte[] getBytes()
     {
         int size   = this.size();
@@ -79,6 +104,12 @@ public class ByteArray {
         return all;
     }
 
+    /**
+     * transforms the bytes in the array into
+     * a hexadecimal string representation
+     * 
+     * @return string representation of the array
+     */
     @Override
     public String toString()
     {
