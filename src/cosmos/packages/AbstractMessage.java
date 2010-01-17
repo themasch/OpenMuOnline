@@ -60,6 +60,14 @@ public abstract class AbstractMessage implements IMessage {
     }
 
 
+    public void setAction(int one, int two)
+    {
+        this.action_1 = (byte)one;
+        this.action_2 = (byte)two;
+    }
+
+
+
     @Override
     public String toString()
     {

@@ -21,8 +21,7 @@ package cosmos.connect;
 import cosmos.network.ClientSocket;
 import cosmos.utils.log.Logger;
 import cosmos.utils.ByteArray;
-import cosmos.packages.IMessage;
-import cosmos.packages.WelcomePackage;
+import cosmos.packages.*;
 import java.net.Socket;
 
 /**
@@ -59,8 +58,11 @@ public class ConnectHandler extends Thread {
             {
                 try {
                     IMessage in = this.client.read();
-                    Logger.log("[" + this.myId + "] said " + in.toString());
-                    this.handleMessage(in);
+                    if(!(in instanceof EmptyMessage))
+                    {
+                        Logger.log("[" + this.myId + "] said " + in.toString());
+                        this.handleMessage(in);
+                    }
                 }
                 catch(cosmos.exceptions.UnkownPackageException e)
                 {
@@ -81,16 +83,36 @@ public class ConnectHandler extends Thread {
      * handels a Message for the client
      * @param msg incoming message
      */
-    protected void handleMessage(IMessage msg)
+    protected void handleMessage(IMessage msg) 
     {
         ByteArray action = msg.getAction();
         if(action.get(0) == (byte)0xF4 && action.get(1) == (byte)0x06)
         {   // ask for server list
-            // TODO: build & send serverlist
             Logger.log("clients requests the serverlist");
-            
+            this.sendServerlist();
         }
+    }
 
+    protected void sendServerlist()
+    {
+        // TODO: build & send serverlist
+        // FIXME: this is a static server list.. thats uncool!
+        byte load_1 = (byte) (Math.random() * 100);
+        byte load_2 = (byte) (Math.random() * 100);
+        byte[] sl = {   (byte)0x00, (byte)0x02,
+                        (byte)0x00, (byte)0x00, load_1, (byte)0x77,
+                        (byte)0x01, (byte)0x00, load_2, (byte)0x77 };
+        IMessage rmsg = new MessageTypeC2();
+        rmsg.setAction(0xF4, 0x06);
+        rmsg.setData(sl);
+        
+        try {
+            this.client.send(rmsg);
+        }
+        catch(cosmos.exceptions.ClientTimeoutException e)
+        {
+            Logger.error(e.getLocalizedMessage());
+        }
     }
 
 }

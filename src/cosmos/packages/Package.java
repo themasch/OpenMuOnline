@@ -29,6 +29,7 @@ public class Package {
 
     public static IMessage parse(ByteArray in) throws UnkownPackageException
     {
+        if(in.size() == 0) return new EmptyMessage();
         if(in.size() < 4) throw new UnkownPackageException();
         byte msg_type = in.get(0);
         switch(msg_type)

@@ -53,7 +53,7 @@ public class MessageTypeC2 extends AbstractMessage {
         byte len_2 = (byte)(len % 256);
         byte len_1 = (byte)((len-len_2) / 256);
         byte[] tmp = new byte[len];
-        int dlength = len - 5;
+        int dlength = this.data.size();
         tmp[0] = this.msg_type;
         tmp[1] = len_1;
         tmp[2] = len_2;

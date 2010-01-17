@@ -54,31 +54,17 @@ public class ClientSocket {
     {
         ByteArray in = new ByteArray();
         byte read;
-        int cnt = 0;
         try {
             while(this.status == ClientStatus.CONNECTED)
             {
-                // for the first byte, we wait 10 seconds
-                int timeout = 10000;
-                if(cnt >= 1)
-                {
-                    // for the next only 0.2seconds
-                    timeout = 200;
-                }
-                this.client.setSoTimeout(timeout);
+                this.client.setSoTimeout(500);
                 read = (byte)this.client.getInputStream().read();
                 in.append(read);
-                cnt++;
             }
         }
         catch(java.net.SocketTimeoutException e)
         {
-            if(cnt == 0)
-            {
-                // if this was the first byte, there seems to be no client
-                this.status = ClientStatus.DISCONNECTED;
-                throw new ClientTimeoutException();
-            } // else: he has nothing to say
+            
         }
         catch(java.net.SocketException e)
         {

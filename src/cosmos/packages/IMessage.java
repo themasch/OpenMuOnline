@@ -36,6 +36,7 @@ public interface IMessage {
     public ByteArray get();
 
     public void setAction(byte one, byte two);
+    public void setAction(int one, int two);
 
     @Override
     public String toString();

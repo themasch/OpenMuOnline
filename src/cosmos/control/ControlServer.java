@@ -44,9 +44,6 @@ public class ControlServer extends Thread {
         // threading stuff
         this.setName("ControlServer");
         // load the configuration
-        /*FileInputStream cfg_file = new FileInputStream(cfg);
-        Properties config = new Properties();
-        config.load(cfg_file);*/
         Config config = new ConfigIni(cfg);
 
         this.start_cs = config.getBoolean("connectsrv.start");
