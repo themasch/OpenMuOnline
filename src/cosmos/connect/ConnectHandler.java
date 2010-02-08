@@ -64,7 +64,7 @@ public class ConnectHandler extends Thread {
                         this.handleMessage(in);
                     }
                 }
-                catch(cosmos.exceptions.UnkownPackageException e)
+                catch(cosmos.exceptions.UnknownPackageException e)
                 {
                     Logger.error("[" + this.myId + "]: received unknown package");
                 }

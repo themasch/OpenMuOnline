@@ -19,7 +19,7 @@
 package cosmos.packages;
 
 import cosmos.utils.ByteArray;
-import cosmos.exceptions.UnkownPackageException;
+import cosmos.exceptions.UnknownPackageException;
 
 /**
  *
@@ -27,16 +27,16 @@ import cosmos.exceptions.UnkownPackageException;
  */
 public class Package {
 
-    public static IMessage parse(ByteArray in) throws UnkownPackageException
+    public static IMessage parse(ByteArray in) throws UnknownPackageException
     {
         if(in.size() == 0) return new EmptyMessage();
-        if(in.size() < 4) throw new UnkownPackageException();
+        if(in.size() < 4) throw new UnknownPackageException();
         byte msg_type = in.get(0);
         switch(msg_type)
         {
             case (byte)0xC1: return new MessageTypeC1(in);
             case (byte)0xC2: return new MessageTypeC2(in);
-                    default:  throw new UnkownPackageException();
+                    default:  throw new UnknownPackageException();
         }
     }
 }

@@ -52,7 +52,7 @@ public class LoginHandler extends Thread {
         {
             Logger.error("[" + id + "]: client timed out");
         }
-        catch(cosmos.exceptions.UnkownPackageException e)
+        catch(cosmos.exceptions.UnknownPackageException e)
         {
             Logger.error("[" + id + "]: received unknown package");
         }
