@@ -57,7 +57,7 @@ public class ConnectHandler extends Thread {
             while(true)
             {
                 try {
-                    IMessage in = this.client.read();
+                    IMessage in = this.client.readMessage();
                     if(!(in instanceof EmptyMessage))
                     {
                         Logger.log("[" + this.myId + "] said " + in.toString());
@@ -66,7 +66,7 @@ public class ConnectHandler extends Thread {
                 }
                 catch(cosmos.exceptions.UnknownPackageException e)
                 {
-                    Logger.error("[" + this.myId + "]: received unknown package");
+                    Logger.error("[" + this.myId + "]: received unknown package:" + e.getMessage());
                 }
             }
         }
