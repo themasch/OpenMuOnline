@@ -28,6 +28,11 @@ public class ConfigIni extends Config {
         return this.cfg.getProperty(key);
     }
 
+    public boolean exists(String key)
+    {
+        return this.cfg.containsKey(key);
+    }
+
     @Override
     public boolean getBoolean(String key) {
         return Boolean.parseBoolean(this.get(key));
@@ -42,5 +47,5 @@ public class ConfigIni extends Config {
     public int getInt(String key) {
         return Integer.parseInt(this.get(key));
     }
-
+    
 }

@@ -22,6 +22,15 @@ package cosmos.exceptions;
  *
  * @author masch
  */
-public class UnkownPackageException extends Exception {
+public class UnknownPackageException extends Exception {
+    
+    public UnknownPackageException(String msg)
+    {
+        super(msg);
+    }
 
+    public UnknownPackageException()
+    {
+        super();
+    }
 }

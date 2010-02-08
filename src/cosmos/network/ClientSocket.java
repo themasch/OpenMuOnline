@@ -18,13 +18,13 @@
 package cosmos.network;
 
 import java.net.Socket;
+import java.util.logging.Logger;
 
 import cosmos.packages.IMessage;
 import cosmos.packages.Package;
 import cosmos.utils.ByteArray;
-import cosmos.utils.log.Logger;
 import cosmos.exceptions.ClientTimeoutException;
-import cosmos.exceptions.UnkownPackageException;
+import cosmos.exceptions.UnknownPackageException;
 
 
 /**
@@ -34,12 +34,14 @@ import cosmos.exceptions.UnkownPackageException;
  */
 public class ClientSocket {
 
-    protected Socket client;
+    protected Connection client;
     protected ClientStatus status;
+    protected int idleTimeout = 2000; // wait 2s for new messages / missing bytes
+    protected Logger log = Logger.getLogger("cosmos.network.ClientSocket");
 
     public ClientSocket(Socket sock)
     {
-        this.client = sock;
+        this.client = new Connection(sock);
         this.status = ClientStatus.CONNECTED;
     }
 
@@ -50,38 +52,81 @@ public class ClientSocket {
      * @throws ClientTimeoutException
      * @throws UnkownPackageException
      */
-    public IMessage read() throws ClientTimeoutException, UnkownPackageException
+    @Deprecated
+    public IMessage read() throws ClientTimeoutException, UnknownPackageException
+    {
+        return this.readMessage();
+    }
+
+    /**
+     * reads a complete message from the client
+     *
+     * @return message from the Client
+     * @throws ClientTimeoutException
+     * @throws UnkownPackageException
+     */
+    public IMessage readMessage() throws ClientTimeoutException, UnknownPackageException
     {
         ByteArray in = new ByteArray();
-        byte read;
+        Byte read;
+        int len;
+        int cnt = 0;
+        int left;
         try {
-            while(this.status == ClientStatus.CONNECTED)
+            this.client.setTimeout(this.idleTimeout);
+            // read the first byte
+            read = this.client.readByte();
+            in.append(read);
+            cnt++;
+            // find out the package type and calculate length
+            if(read == 0xC1)
             {
-                this.client.setSoTimeout(500);
-                read = (byte)this.client.getInputStream().read();
+                read = this.client.readByte();
+                in.append(read);
+                cnt++;
+                len = read;
+            }
+            else if(read == 0xC2)
+            {
+                read = this.client.readByte();
+                in.append(read);
+                len = read*256;
+                read = this.client.readByte();
+                in.append(read);
+                len = len + read;
+                cnt += 2;
+            } else {
+                throw new UnknownPackageException(in.toString());
+            }
+            left = len - cnt;
+            // read missing bytes
+            for(int i=0;i<left;i++)
+            {
+                read = this.client.readByte();
                 in.append(read);
             }
         }
-        catch(java.net.SocketTimeoutException e)
+        catch(java.net.SocketTimeoutException timeout)
         {
-            
+            // okay.. nothing left to do
+            // we only use the timeout exception to leave the loop
         }
-        catch(java.net.SocketException e)
+        catch(java.net.SocketException sockerr)
         {
-            if(e.getMessage().equals("Connection reset"))
+            if(sockerr.getMessage().equals("Connection reset"))
             {
-                this.status = ClientStatus.DISCONNECTED;
+                this.shutdown();
                 throw new ClientTimeoutException();
+            } else {
+                this.log.warning(sockerr.getLocalizedMessage());
             }
-            Logger.error(e.getLocalizedMessage());
         }
-        catch(java.io.IOException e)
+        catch(java.io.IOException ioexcep)
         {
-            Logger.error(e.getLocalizedMessage());
+            this.log.warning(ioexcep.getLocalizedMessage());
         }
         return Package.parse(in);
     }
-
     /**
      * Sends a message to the client
      *
@@ -90,17 +135,16 @@ public class ClientSocket {
     public void send(IMessage msg) throws ClientTimeoutException
     {
         try {
-            if(this.status == ClientStatus.CONNECTED)
+            if(this.client.isConnected() && this.status == ClientStatus.CONNECTED)
             {
-                this.client.getOutputStream().write(msg.get().getBytes());
-                this.client.getOutputStream().flush();
+                this.client.write(msg.get().getBytes());
             } else {
                 throw new ClientTimeoutException();
             }
         }
         catch(java.io.IOException e)
         {
-            Logger.error(e.getLocalizedMessage());
+            this.log.warning(e.getLocalizedMessage());
         }
     }
 
@@ -115,7 +159,7 @@ public class ClientSocket {
             this.status = ClientStatus.DISCONNECTED;
         }
         catch(java.io.IOException e) {
-            Logger.error(e.getLocalizedMessage());
+            this.log.warning(e.getLocalizedMessage());
         }
     }
 }
