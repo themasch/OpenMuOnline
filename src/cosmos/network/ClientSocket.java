@@ -79,14 +79,14 @@ public class ClientSocket {
             in.append(read);
             cnt++;
             // find out the package type and calculate length
-            if(read == 0xC1)
+            if(read == (byte)0xC1)
             {
                 read = this.client.readByte();
                 in.append(read);
                 cnt++;
                 len = read;
             }
-            else if(read == 0xC2)
+            else if(read == (byte)0xC2)
             {
                 read = this.client.readByte();
                 in.append(read);
