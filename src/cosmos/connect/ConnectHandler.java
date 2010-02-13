@@ -19,9 +19,10 @@
 package cosmos.connect;
 
 import cosmos.network.ClientSocket;
-import cosmos.utils.log.Logger;
 import cosmos.utils.ByteArray;
 import cosmos.packages.*;
+
+import java.util.logging.Logger;
 import java.net.Socket;
 
 /**
@@ -34,7 +35,7 @@ import java.net.Socket;
  */
 public class ConnectHandler extends Thread {
     private ClientSocket client;
-
+    protected Logger logger;
     private String myId;
 
     public ConnectHandler(Socket client)
@@ -42,13 +43,16 @@ public class ConnectHandler extends Thread {
         // threading stuff
         this.myId = String.valueOf(this.getId());
         this.setName("ConnectHandler [" + this.myId + "]");
+        // loggind stuff
+        this.logger = Logger.getLogger("cosmos.connect");
+
         this.client = new ClientSocket(client);
     }
 
     @Override
     public void run()
     {
-        Logger.log("[" + this.myId + "]: ConnectHandler started");
+        this.logger.entering(this.getClass().getName(), "run", this.myId);
         // do connect stuff here
         try {
             // send welcome package
@@ -60,23 +64,23 @@ public class ConnectHandler extends Thread {
                     IMessage in = this.client.readMessage();
                     if(!(in instanceof EmptyMessage))
                     {
-                        Logger.log("[" + this.myId + "] said " + in.toString());
+                        this.logger.info("[" + this.myId + "] said " + in.toString());
                         this.handleMessage(in);
                     }
                 }
                 catch(cosmos.exceptions.UnknownPackageException e)
                 {
-                    Logger.error("[" + this.myId + "]: received unknown package:" + e.getMessage());
+                    this.logger.warning("[" + this.myId + "]: received unknown package:" + e.getMessage());
                 }
             }
         }
         catch(cosmos.exceptions.ClientTimeoutException e)
         {
-            Logger.error("[" + this.myId + "]: client timed out");
+            this.logger.info("[" + this.myId + "]: client timed out");
         }
   
         this.client.shutdown();
-        Logger.log("[" + this.myId + "]: ConnectHandler stopped");
+        this.logger.exiting(this.getClass().getName(), "run", this.myId);
     }
 
     /**
@@ -88,7 +92,7 @@ public class ConnectHandler extends Thread {
         ByteArray action = msg.getAction();
         if(action.get(0) == (byte)0xF4 && action.get(1) == (byte)0x06)
         {   // ask for server list
-            Logger.log("clients requests the serverlist");
+            this.logger.info("clients requests the serverlist");
             this.sendServerlist();
         }
     }
@@ -111,7 +115,7 @@ public class ConnectHandler extends Thread {
         }
         catch(cosmos.exceptions.ClientTimeoutException e)
         {
-            Logger.error(e.getLocalizedMessage());
+            this.logger.warning(e.getLocalizedMessage());
         }
     }
 

@@ -19,8 +19,8 @@
 package cosmos.login;
 
 import java.net.Socket;
+import java.util.logging.Logger;
 import cosmos.network.ClientSocket;
-import cosmos.utils.log.Logger;
 import cosmos.packages.IMessage;
 /**
  *
@@ -29,12 +29,15 @@ import cosmos.packages.IMessage;
 public class LoginHandler extends Thread {
 
     private ClientSocket client;
-
+    private Logger       logger;
     public LoginHandler(Socket client)
     {
         // threading stuff
         String id = String.valueOf(this.getId());
         this.setName("LoginHandler [" + id + "]");
+        // set up logging
+        this.logger = Logger.getLogger("cosmos.login");
+        // set client
         this.client = new ClientSocket(client);
     }
 
@@ -42,22 +45,22 @@ public class LoginHandler extends Thread {
     public void run()
     {
         String id = String.valueOf(this.getId());
-        Logger.log("[" + id + "]: loginhandler started");
+        this.logger.info("[" + id + "]: loginhandler started");
         // do login stuff here
         try {
-            IMessage in = this.client.read();
-            Logger.log("[" + id + "]: " + in.toString());
+            IMessage in = this.client.readMessage();
+            this.logger.info("[" + id + "]: " + in.toString());
         }
         catch(cosmos.exceptions.ClientTimeoutException e)
         {
-            Logger.error("[" + id + "]: client timed out");
+            this.logger.info("[" + id + "]: client timed out");
         }
         catch(cosmos.exceptions.UnknownPackageException e)
         {
-            Logger.error("[" + id + "]: received unknown package");
+            this.logger.info("[" + id + "]: received unknown package");
         }
         this.client.shutdown();
-        Logger.log("[" + id + "]: loginhandler stopped");
+        this.logger.info("[" + id + "]: loginhandler stopped");
     }
 
 }

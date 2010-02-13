@@ -20,7 +20,7 @@ package cosmos.connect;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-import cosmos.utils.log.Logger;
+import java.util.logging.Logger;
 
 /**
  *
@@ -29,17 +29,19 @@ import cosmos.utils.log.Logger;
 public class ConnectServer extends Thread {
 
     private ServerSocket sock;
-
+    protected Logger logger;
     public ConnectServer(int port)
     {
         // threading stuff
         this.setName("ConnectServer");
+        // loggind stuff
+        this.logger = Logger.getLogger("cosmos.connect");
         try {
             this.sock = new ServerSocket(port);
         }
         catch(java.io.IOException e)
         {
-            Logger.error(e.getLocalizedMessage());
+            this.logger.warning(e.getLocalizedMessage());
         }
     }
 
@@ -47,20 +49,20 @@ public class ConnectServer extends Thread {
     @Override
     public void run()
     {
-        Logger.status("ConnectServer running");
+        this.logger.entering("ConnectServer", "run");
         try {
             while(true)
             {
                 Socket newClient = this.sock.accept();
-                Logger.log("new connection from: " + newClient.getInetAddress().getHostAddress());
+                this.logger.info("new connection from: " + newClient.getInetAddress().getHostAddress());
                 ConnectHandler hdl = new ConnectHandler(newClient);
                 hdl.start();
             }
         }
         catch(java.io.IOException e)
         {
-            Logger.error(e.getLocalizedMessage());
+            this.logger.warning(e.getLocalizedMessage());
         }
-        Logger.status("ConnectServer stopped");
+        this.logger.exiting("ConnectServer", "run");
     }
 }

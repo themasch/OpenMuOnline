@@ -19,10 +19,11 @@
 package cosmos;
 
 import cosmos.control.ControlServer;
-import cosmos.utils.log.LogWriterStdOut;
-import cosmos.utils.log.LogWriterFile;
-import cosmos.utils.log.Logger;
 
+import java.util.logging.Logger;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
 /**
  * Main class
  * @author Mark Schmale <ma.schmale@googlemail.com>
@@ -35,9 +36,9 @@ public class Main {
     public static void main(String[] args) {
         // logging stuff
         try {
-            Logger.attachLogger(new LogWriterStdOut());
-            LogWriterFile flog = new LogWriterFile("./cosmos.log");
-            Logger.attachLogger(flog);
+            FileHandler    flog = new FileHandler("./cosmos.log");
+            flog.setLevel(Level.WARNING);
+            Logger.getLogger("").addHandler(flog);
             // start the control server
             ControlServer ctl = new ControlServer("./config.ini");
             ctl.start();

@@ -21,7 +21,8 @@ import cosmos.connect.ConnectServer;
 import cosmos.login.LoginServer;
 import cosmos.config.Config;
 import cosmos.config.ConfigIni;
-import cosmos.utils.log.Logger;
+
+import java.util.logging.Logger;
 /**
  * Main server thread
  *
@@ -39,6 +40,8 @@ public class ControlServer extends Thread {
     private LoginServer   ls;
     private boolean       start_ls = false;
 
+    protected Logger logger;
+
     public ControlServer(String cfg) throws java.io.IOException
     {
         // threading stuff
@@ -48,6 +51,9 @@ public class ControlServer extends Thread {
 
         this.start_cs = config.getBoolean("connectsrv.start");
         this.start_ls = config.getBoolean("loginsrv.start");
+
+        // Logging stuff
+        this.logger = Logger.getLogger("cosmos.control");
 
         //// create the servers
         // connect server
@@ -69,12 +75,12 @@ public class ControlServer extends Thread {
         // at first.. start all servers
         if(this.start_cs)
         {
-            Logger.status("starting ConnectServer...");
+            this.logger.info("starting ConnectServer...");
             this.cs.start();
         }
         if(this.start_ls)
         {
-            Logger.status("starting LoginServer...");
+            this.logger.info("starting LoginServer...");
             this.ls.start();
         }
 
@@ -92,16 +98,15 @@ public class ControlServer extends Thread {
             // check cs
             if(this.start_cs && !this.cs.isAlive())
             {
-                Logger.error("ConnectServer seems to be dead.. restarting!");
+                this.logger.warning("ConnectServer seems to be dead.. restarting!");
                 this.cs.start();
             }
             // check ls
             if(this.start_ls && !this.ls.isAlive())
             {
-                Logger.error("LoginServer seems to be dead.. restarting!");
+                this.logger.warning("LoginServer seems to be dead.. restarting!");
                 this.ls.start();
             }
-
         }
     }
 }
